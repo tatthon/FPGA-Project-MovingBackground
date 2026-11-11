@@ -32,9 +32,16 @@ module tt_um_vga_example (
     always @(posedge clk) begin
         if (!rst_n)
             scrollOffset <= 10'd0;
-        else if (frame_tick)
-            scrollOffset <= (scrollOffset == 10'd640)
-                          ? 10'd0 : scrollOffset + 10'd1;
+        else if (frame_tick) begin
+            if(ui_in[0] && !ui_in[1]) begin 
+              scrollOffset <= (scrollOffset == 10'0)
+                            ? 10'd0 : scrollOffset - 10'd1;
+            end
+            if(!ui_in[0] && ui_in[1]) begin 
+              scrollOffset <= (scrollOffset == 10'd640)
+                            ? 10'd640 : scrollOffset + 10'd1;
+            end
+        end
     end
 
     wire [10:0] x_scroll = {1'b0, pix_x} + {1'b0, scrollOffset};
